@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+  <!-- What App is this?-->
+  <title>Critical Care Calculator</title>
+</head>
+
+<body>
+  <div id="dietizer-app" class="container d-flex flex-wrap justify-content-between" style="margin:  20px auto;">
+    <!--App Introduction-->
+    <div class="jumbotron col-md-12" style="background-color: rgba(133,14,16,0.3)">
+      <h1 class="display-4">Critical Care Calculator for Dietitians</h1>
+      <p class="lead">This small app is intended to increase workflow efficiency for clinical dietians.
+         These calculations are ESTIMATIONS and cannot replace clinical judgement.
+      </p>
+      <hr class="my-4">
+      <p>For now, the app assumes all data is in metric and rounds figures where appropriate.</p>
+    </div>
+
+    <!-- Patient's Condition -->
+    <div class="p-condition d-flex flex-row col-sm-12">
+      <div class="form-group col-md-3" role="group" aria-label="Patient Attributes and Statuses">
+        <label>Patient Gender</label>
+        <select v-model="gender" class="form-control">
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+      <div class="form-group col-md-3" role="group" aria-label="Patient Attributes and Statuses">
+        <label>... on a vent?</label>
+        <select v-model="onVent" class="form-control">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div class="form-group col-md-3" role="group" aria-label="Patient Attributes and Statuses">
+        <span v-show="onVent === 'Yes'">
+          <label>... have trauma?</label>
+          <select v-model="hasTrauma" class="form-control">
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </span>
+      </div>
+      <div class="form-group col-md-3" role="group" aria-label="Patient Attributes and Statuses">
+        <span v-show="hasTrauma === 'Yes'">
+          <label>... have burns?</label>
+          <select v-model="hasBurns" class="form-control">
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </span>
+      </div>
+    </div>
+
+    <!-- Pateint Data-->
+    <div class="p-info col-lg-4" style="max-width: 250px">
+      <div class="input-group mb-3">
+        <input v-model.number="age" type="number" class="form-control" placeholder="Age" aria-label="Age">
+        <div class="input-group-append">
+          <span class="input-group-text">years old</span>
+        </div>
+      </div>
+
+      <div class="input-group mb-3 ">
+        <input v-model.number="height" type="number" class="form-control" placeholder="Height" aria-label="Height">
+        <div class="input-group-append">
+          <span class="input-group-text">cm.</span>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <input v-model.number="weight" type="number" class="form-control" placeholder="Weight" aria-label="Weight">
+        <div class="input-group-append">
+          <span class="input-group-text">kg.</span>
+        </div>
+      </div>
+      <div class="input-group mb-3">
+        <input v-model.number="temperature" type="number" class="form-control" placeholder="Temperature"
+          aria-label="Temperature">
+        <div class="input-group-append">
+          <span class="input-group-text">&degC<span>
+        </div>
+      </div>
+
+      <div class="input-group mb-3">
+        <input v-model.number="ventRate" type="number" class="form-control" placeholder="Ventilation Rate"
+          aria-label="Ventilation Rate" v-show="onVent === 'Yes'">
+        <div class="input-group-append">
+          <span class="input-group-text" v-show="onVent === 'Yes'">L/min<span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-info" @click="clearAll">Clear</button>
+
+    </div>
+
+    <!-- Results -->
+    <div class="results col-lg-6">
+      <table class="table table-bordered mt-auto">
+        <tbody>
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Data</th>
+              <th scope="col">Values</th>
+              <th scope="col">Info.</th>
+            </tr>
+          </thead>
+          <tr :class="bmiColor">
+            <th scope="row">BMI</td>
+            <td>{{bmi}}</td>
+            <td>{{bmiStatus}}</td>
+          </tr>
+          <tr>
+            <th scope="row">IBW</td>
+            <td>{{idealBW}} kg</td>
+            <td>Based on Height</td>
+          </tr>
+          <tr v-show="weight/idealBW >= 1.2">
+            <th scope="row">Adjusted BW</td>
+            <td>{{adjustedBW}} kg</td>
+            <td>IBW is 120% or greater</td>
+          </tr>
+          <tr class="table-primary">
+            <th scope="row">Kcal/d (Equation)</td>
+            <td>{{chooseFormula}} kcal/d</td>
+            <td>{{formula}}</td>
+          </tr>
+          <tr class="table-primary">
+            <th scope="row">Kcal/Kg/d</td>
+            <td>{{calPerK}} kcal/d</td>
+            <td>Calories based on BMI and IBW</td>
+          </tr>
+          <tr>
+            <th scope="row">Protein Needs</td>
+            <td>{{protein}} g/d</td>
+            <td>Protein based on BMI</td>
+          </tr>
+          <tr class="table-info">
+            <th scope="row">Fluids</td>
+            <td>{{fluids}} ml/d</td>
+            <td>Fluids based on Weight</td>
+          </tr>
+          <tr>
+            <th scope="row">Min. Fluid Needs</td>
+            <td>{{minFluids}} ml/d</td>
+            <td>Fluid based on 1 mL/kcal</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+  <script src="dietizer.js"></script>
+</body>
+
+</html>
