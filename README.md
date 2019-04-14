@@ -1,8 +1,9 @@
 # Dietizer
 
-Dietizer is a tool that takes anthropometrics along with other clinical data and performs calculations with proprietary
- formluas to help Dietitians work more efficiently. While this calculator can not take the place of a 
- Registered Dietitian's clinical judgement, it can help them allocate their time for other tasks.
+Dietizer is a tool that takes anthropometrics along with other clinical data and automates complex calculations with 
+proprietary formluas to help Dietitians work more efficiently. While this calculator can not take the place of a 
+Registered Dietitian's clinical judgement, it can help them allocate their time for other tasks and help minimize
+human error.
 
 This was developed with constant feedback with a registered deitian with more than 15 years of clinical experience.
 
