@@ -56,27 +56,27 @@ new Vue({
             return ibw.toFixed(1);
         },
         calPerK: function () {
-            let cals = "";
+            let upper, lower = 0;
             if (this.weight === '') return 0;
             else {
                 switch (true) {
                     case this.bmi < 30:
-                        cals = `${25 * this.weight} - ${30 * this.weight}`;
-                        this.minFluids = 25 * this.weight;
+                        lower = 25 * this.weight;
+                        upper = 30 * this.weight;
                         break;
                     case this.bmi >= 30 && this.bmi <= 50:
-                        cals = `${11 * this.weight} - ${14 * this.weight}`;
-                        this.minFluids = 11 * this.weight;
+                        lower = 11 * this.weight;
+                        upper = 14 * this.weight
                         break;
                     case this.bmi > 50:
-                        cals = `${22 * this.idealBW} - ${25 * this.idealBW}`
-                        this.minFluids = 22 * this.idealBW;
+                        lower = 22 * this.idealBW;
+                        upper = 25 * this.idealBW;
                         break;
                     default:
-                        this.minFluids = 0;
                         break;
                 }
-                return parseFloat(cals, 10).toFixed(1);
+                this.minFluids = lower;
+                return `${Math.ceil(lower)} - ${Math.ceil(upper, 10)}`;
             }
         },
         canDoMiffinSJ: function () {
