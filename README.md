@@ -7,7 +7,9 @@ human error.
 
 This was developed with constant feedback with a registered deitian with more than 15 years of clinical experience.
 
-<span style="color: FF0000">**This app does not save or store any identifiable patient information, keeping in compliance with privacy laws.**</span>
+<div style="color:#FF0000">
+    **This app does not save or store any identifiable patient information, keeping in compliance with privacy laws.**
+</div>
 
 <p align="center">
   <img src="/assets/calc-table.png" alt="Initial Calculator Table"
