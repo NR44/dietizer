@@ -75,7 +75,7 @@ new Vue({
                     default:
                         break;
                 }
-                this.minFluids = lower;
+                this.minFluids = Math.ceil(lower);
                 return `${Math.ceil(lower)} - ${Math.ceil(upper, 10)}`;
             }
         },
