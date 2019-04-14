@@ -77,7 +77,7 @@ new Vue({
                         this.minFluids = 0;
                         break;
                 }
-                return cals;
+                return cals.toFixed(1);
             }
         },
         canDoMiffinSJ: function () {
@@ -215,7 +215,7 @@ new Vue({
                 }
                 if (this.onVent === "Yes" && this.hasTrauma === "No" && this.bmi < 30 || (this.bmi > 30 && this.age <= 60)) {
                     this.formula = 'The Penn State Equation';
-                    return this.pennSate;
+                    return this.pennState;
                 }
             }
         },
