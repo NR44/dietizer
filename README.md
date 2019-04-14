@@ -1,11 +1,12 @@
 # Dietizer
 
-Dietizer is a tool that takes a person's information and makes calculations with proprietary formluas
-to help Dietitians work more efficiently. While this calculator can not take the place of a Registered Dietitian's
-clinical judgement, it can help them concentrate on something more important than crunching numbers.
+Dietizer is a tool that takes anthropometrics along with other clinical data and performs calculations with proprietary
+ formluas to help Dietitians work more efficiently. While this calculator can not take the place of a 
+ Registered Dietitian's clinical judgement, it can help them allocate their time for other tasks.
 
-This application was developed with constant feedback with a registered deitian with 15 years of experience in both 
-ICU and NICU(ICU for babies).
+This was developed with constant feedback with a registered deitian with more than 15 years of clinical experience.
+
+** This app does not save or store any identifiable patient information, keeping in compliance with privacy laws.
 
 <p align="center">
   <img src="/assets/calc-table.png" alt="Initial Calculator Table"
@@ -17,5 +18,5 @@ Calculations that can be made, include:
 * IBW (Ideal Body Weight)
 * Adjusted Body Weight
 * Fluid Needs for Tube Feeding
-* Protein Needs for patient's that need it.
+* Protein Needs for critically ill patients.
 * And a few others...
