@@ -56,7 +56,7 @@ new Vue({
             return ibw.toFixed(1);
         },
         calPerK: function () {
-            let cals = '';
+            let cals = "";
             if (this.weight === '') return 0;
             else {
                 switch (true) {
@@ -73,11 +73,10 @@ new Vue({
                         this.minFluids = 22 * this.idealBW;
                         break;
                     default:
-                        cals = 0;
                         this.minFluids = 0;
                         break;
                 }
-                return cals.toFixed(1);
+                return parseFloat(cals, 10).toFixed(1);
             }
         },
         canDoMiffinSJ: function () {
