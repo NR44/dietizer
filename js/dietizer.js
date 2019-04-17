@@ -11,6 +11,8 @@ new Vue({
         temperature: '',
         ventRate: '',
         formula: '',
+        kcalFormula: '',
+        proteinFormula: '',
         bmiStatus: '',
         minFluids: 0
     },
@@ -18,13 +20,13 @@ new Vue({
         bmiColor: function () {
             switch (true) {
                 case this.bmiStatus === "Underweight":
-                    return "table-warning";
+                return "table-warning";
                 case this.bmiStatus === "Healthy Weight":
-                    return "table-success";
+                return "table-success";
                 case this.bmiStatus === "Overweight":
-                    return "table-warning";
+                return "table-warning";
                 case this.bmiStatus === "Obese":
-                    return "table-danger";
+                return "table-danger";
             }
         },
         adjustedBW: function () {
@@ -37,20 +39,20 @@ new Vue({
             else {
                 switch (true) {
                     case heightIncm >= 60 && this.gender === "Female":
-                        ibw = (100 + 5 * (heightIncm - 60)) / 2.2;
-                        break;
+                    ibw = (100 + 5 * (heightIncm - 60)) / 2.2;
+                    break;
                     case heightIncm < 60 && this.gender === "Female":
-                        ibw = (100 - 5 * (60 - heightIncm)) / 2.2;
-                        break;
+                    ibw = (100 - 5 * (60 - heightIncm)) / 2.2;
+                    break;
                     case heightIncm >= 60 && this.gender === "Male":
-                        ibw = (106 + 6 * (heightIncm - 60)) / 2.2;
-                        break;
+                    ibw = (106 + 6 * (heightIncm - 60)) / 2.2;
+                    break;
                     case heightIncm < 60 && this.gender === "Male":
-                        ibw = (106 - 6 * (60 - heightIncm)) / 2.2;
-                        break;
+                    ibw = (106 - 6 * (60 - heightIncm)) / 2.2;
+                    break;
                     default:
-                        ibw = 0;
-                        break;
+                    ibw = 0;
+                    break;
                 }
             }
             return ibw.toFixed(1);
@@ -61,19 +63,22 @@ new Vue({
             else {
                 switch (true) {
                     case this.bmi < 30:
-                        lower = 25 * this.weight;
-                        upper = 30 * this.weight;
-                        break;
+                    lower = 25 * this.weight;
+                    upper = 30 * this.weight;
+                    this.kcalFormula = "25-30 kcal/kg AW (BMI < 30)";
+                    break;
                     case this.bmi >= 30 && this.bmi <= 50:
-                        lower = 11 * this.weight;
-                        upper = 14 * this.weight
-                        break;
+                    lower = 11 * this.weight;
+                    upper = 14 * this.weight
+                    this.kcalFormula = "11-14 kcal/kg AW (BMI 30-50)";
+                    break;
                     case this.bmi > 50:
-                        lower = 22 * this.idealBW;
-                        upper = 25 * this.idealBW;
-                        break;
+                    lower = 22 * this.idealBW;
+                    upper = 25 * this.idealBW;
+                    this.kcalFormula = "22-25 kcal/kg IBW (BMI > 50)";
+                    break;
                     default:
-                        break;
+                    break;
                 }
                 this.minFluids = Math.ceil(lower);
                 return `${Math.ceil(lower)} - ${Math.ceil(upper, 10)}`;
@@ -147,94 +152,103 @@ new Vue({
                 return 0;
             } else {
                 w = parseFloat(this.weight, 10).toFixed(1);
-                if (this.bmi < 30) return `${Math.ceil(1.2 * w)}-${Math.ceil(2 * w)} `;
-                else if (this.bmi >= 30 && this.bmi <= 39.9) return `At least: ${Math.ceil(2 * this.idealBW)} `;
-                else return `${Math.floor(2.5 * this.idealBW)} `;
+                if (this.bmi < 30){
+                 this.proteinFormula = "1.2-2 g/kg AW (BMI < 30)";
+                 return `${Math.ceil(1.2 * w)}-${Math.ceil(2 * w)} `;
+             }
+             else if (this.bmi >= 30 && this.bmi <= 39.9) {
+                 this.proteinFormula = "at least 2 g/kg IBW (BMI 30-39.9)";
+                 return `At least: ${Math.ceil(2 * this.idealBW)} `;
+             }
+             else {
+                 this.proteinFormula = "up to 2.5 g/kg IBW (BMI >= 40)";
+                 return `${Math.floor(2.5 * this.idealBW)} `;
+             }
+         }
+     },
+     fluids: function () {
+        let fluids = 0;
+        const w = this.weight;
+        if (parseFloat(this.bmi, 10) < 30) {
+            switch (true) {
+                case w >= 1 && w <= 10:
+                fluids = 100 * w;
+                break;
+                case w > 10 && w <= 20:
+                fluids = (1000 + 50 * w) / 10;
+                break;
+                case w > 20 && this.age < 50:
+                fluids = 1500 + 20 * (w - 20);
+                break;
+                case w > 20 && this.age >= 50:
+                fluids = 1500 + 15 * (w - 20);
+                break;
+                default:
+                fluids;
+                break;
             }
-        },
-        fluids: function () {
-            let fluids = 0;
-            const w = this.weight;
+        } else {
             const aw = (this.weight - parseFloat(this.idealBW, 10)) * .25 + parseFloat(this.idealBW, 10);
-            if (parseFloat(this.bmi, 10) < 30) {
-                switch (true) {
-                    case w >= 1 && w <= 10:
-                        fluids = 100 * w;
-                        break;
-                    case w > 10 && w <= 20:
-                        fluids = (1000 + 50 * w) / 10;
-                        break;
-                    case w > 20 && this.age < 50:
-                        fluids = 1500 + 20 * (w - 20);
-                        break;
-                    case w > 20 && this.age >= 50:
-                        fluids = 1500 + 15 * (w - 20);
-                        break;
-                    default:
-                        fluids;
-                        break;
-                }
-            } else {
-                switch (true) {
-                    case this.age > 75:
-                        fluids = 25 * aw;
-                        break;
-                    case this.age >= 56 && this.age <= 75:
-                        fluids = 30 * aw;
-                        break;
-                    case this.age >= 18 && this.age <= 55:
-                        fluids = 35 * aw;
-                        break;
-                    default:
-                        fluids;
-                        break;
-                }
+            switch (true) {
+                case this.age > 75:
+                fluids = 25 * aw;
+                break;
+                case this.age >= 56 && this.age <= 75:
+                fluids = 30 * aw;
+                break;
+                case this.age >= 18 && this.age <= 55:
+                fluids = 35 * aw;
+                break;
+                default:
+                fluids;
+                break;
             }
-            return Math.ceil(fluids);
-        },
-        chooseFormula: function () {
-            if (this.weight === '') {
-                return 0;
-            } else {
-                if (this.onVent === "No") {
-                    this.formula = 'Miffin-St Jeor';
-                    return this.miffinSJ;
-                }
-                if (this.onVent === "Yes" && this.hasTrauma === "Yes" && this.hasBurns === "Yes") {
-                    this.formula = 'Ireton Jones 1992';
-                    return this.iertonJones92;
-                }
-                if (this.onVent === "Yes" && this.hasTrauma === "Yes" && this.hasBurns === "No") {
-                    this.formula = 'The Penn State Equation';
-                    return this.pennState;
-                }
-                if (this.onVent === "Yes" && this.hasTrauma === "No" && this.bmi > 30 && this.age > 60) {
-                    this.formula = 'The Modified Penn State Equation'
-                    return this.modPennState
-                }
-                if (this.onVent === "Yes" && this.hasTrauma === "No" && this.bmi < 30 || (this.bmi > 30 && this.age <= 60)) {
-                    this.formula = 'The Penn State Equation';
-                    return this.pennState;
-                }
-            }
-        },
-    },
-    methods: {
-        clearAll: function () {
-            this.age = "";
-            this.bmiStatus = "";
-            this.formula = "";
-            this.gender = null;
-            this.hasBurns = null;
-            this.hasTrauma = null;
-            this.height = "";
-            this.minFluids = 0;
-            this.onVent = null;
-            this.temperature = "";
-            this.ventRate = "";
-            this.weight = "";
-
         }
+        return Math.ceil(fluids);
+    },
+    chooseFormula: function () {
+        if (this.weight === '') {
+            return 0;
+        } else {
+            if (this.onVent === "No") {
+                this.formula = 'Miffin-St Jeor';
+                return this.miffinSJ;
+            }
+            if (this.onVent === "Yes" && this.hasTrauma === "Yes" && this.hasBurns === "Yes") {
+                this.formula = 'Ireton Jones 1992';
+                return this.iertonJones92;
+            }
+            if (this.onVent === "Yes" && this.hasTrauma === "Yes" && this.hasBurns === "No") {
+                this.formula = 'Penn State Equation (2003)';
+                return this.pennState;
+            }
+            if (this.onVent === "Yes" && this.hasTrauma === "No" && this.bmi > 30 && this.age > 60) {
+                this.formula = 'Modified Penn State Equation (2010)'
+                return this.modPennState
+            }
+            if (this.onVent === "Yes" && this.hasTrauma === "No" && this.bmi < 30 || (this.bmi > 30 && this.age <= 60)) {
+                this.formula = 'Penn State Equation (2003)';
+                return this.pennState;
+            }
+        }
+    },
+},
+methods: {
+    clearAll: function () {
+        this.age = "";
+        this.bmiStatus = "";
+        this.formula = "";
+        this.gender = null;
+        this.hasBurns = null;
+        this.hasTrauma = null;
+        this.height = "";
+        this.minFluids = 0;
+        this.onVent = null;
+        this.temperature = "";
+        this.ventRate = "";
+        this.weight = "";
 
     }
+
+}
 });
