@@ -130,7 +130,7 @@
                 <tr v-show="weight/idealBW >= 1.2">
                   <th scope="row">Adjusted BW</td>
                     <td>{{adjustedBW}} kg</td>
-                    <td>IBW is 120% or greater</td>
+                    <td>IBW is {{adjustedBWRatio}}% of Actual Weight</td>
                   </tr>
                   <tr class="table-primary">
                     <th scope="row">Kcal/d (Equation)</td>
@@ -150,7 +150,7 @@
                         <tr class="table-info">
                           <th scope="row">Fluids</td>
                             <td>{{fluids}} ml/d</td>
-                            <td>Fluids based on Weight</td>
+                            <td>{{fluidsFormula}}</td>
                           </tr>
                           <tr>
                             <th scope="row">Min. Fluid Needs</td>

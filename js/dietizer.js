@@ -1,6 +1,7 @@
 new Vue({
     el: '#dietizer-app',
     data: {
+        adjustedBWRatio: 0,
         gender: null,
         onVent: null,
         hasTrauma: null,
@@ -12,6 +13,7 @@ new Vue({
         ventRate: '',
         formula: '',
         kcalFormula: '',
+        fluidsFormula: '',
         proteinFormula: '',
         bmiStatus: '',
         minFluids: 0
@@ -30,6 +32,7 @@ new Vue({
             }
         },
         adjustedBW: function () {
+            this.adjustedBWRatio = (parseFloat(this.weight,10)/parseFloat(this.idealBW, 10) * 100).toFixed(0);
             return ((this.weight - parseFloat(this.idealBW, 10)) * .25 + parseFloat(this.idealBW, 10)).toFixed(1);
         },
         idealBW: function () {
@@ -65,12 +68,12 @@ new Vue({
                     case this.bmi < 30:
                     lower = 25 * this.weight;
                     upper = 30 * this.weight;
-                    this.kcalFormula = "25-30 kcal/kg AW (BMI < 30)";
+                    this.kcalFormula = "25-30 kcal/kg Actual Weight (BMI < 30)";
                     break;
                     case this.bmi >= 30 && this.bmi <= 50:
                     lower = 11 * this.weight;
                     upper = 14 * this.weight
-                    this.kcalFormula = "11-14 kcal/kg AW (BMI 30-50)";
+                    this.kcalFormula = "11-14 kcal/kg Actual Weight (BMI 30-50)";
                     break;
                     case this.bmi > 50:
                     lower = 22 * this.idealBW;
@@ -153,7 +156,7 @@ new Vue({
             } else {
                 w = parseFloat(this.weight, 10).toFixed(1);
                 if (this.bmi < 30){
-                 this.proteinFormula = "1.2-2 g/kg AW (BMI < 30)";
+                 this.proteinFormula = "1.2-2 g/kg Actual Weight (BMI < 30)";
                  return `${Math.ceil(1.2 * w)}-${Math.ceil(2 * w)} `;
              }
              else if (this.bmi >= 30 && this.bmi <= 39.9) {
@@ -173,15 +176,19 @@ new Vue({
             switch (true) {
                 case w >= 1 && w <= 10:
                 fluids = 100 * w;
+                this.fluidsFormula = "100mL/kg"
                 break;
                 case w > 10 && w <= 20:
                 fluids = (1000 + 50 * w) / 10;
+                this.fluidsFormula = "1000mL + 50mL/kg over 10kg"
                 break;
                 case w > 20 && this.age < 50:
                 fluids = 1500 + 20 * (w - 20);
+                this.fluidsFormula = "1500mL + 20mL/kg over 20kg"
                 break;
                 case w > 20 && this.age >= 50:
                 fluids = 1500 + 15 * (w - 20);
+                this.fluidsFormula = "1500mL + 15mL/kg over 20kg"
                 break;
                 default:
                 fluids;
@@ -192,12 +199,15 @@ new Vue({
             switch (true) {
                 case this.age > 75:
                 fluids = 25 * aw;
+                this.fluidsFormula = "Age > 75 --> 25 * Adjusted Weight"
                 break;
                 case this.age >= 56 && this.age <= 75:
                 fluids = 30 * aw;
+                this.fluidsFormula = "Age 56-74 --> 30 Adjusted Weight"
                 break;
                 case this.age >= 18 && this.age <= 55:
                 fluids = 35 * aw;
+                this.fluidsFormula = "Age 18-55 --> 35 * Adjusted Weight"
                 break;
                 default:
                 fluids;
@@ -235,19 +245,22 @@ new Vue({
 },
 methods: {
     clearAll: function () {
-        this.age = "";
-        this.bmiStatus = "";
-        this.formula = "";
-        this.gender = null;
-        this.hasBurns = null;
-        this.hasTrauma = null;
-        this.height = "";
-        this.minFluids = 0;
-        this.onVent = null;
-        this.temperature = "";
-        this.ventRate = "";
-        this.weight = "";
-
+        this.adjustedBWRatio= 0,
+        this.gender= null,
+        this.onVent= null,
+        this.hasTrauma= null,
+        this.hasBurns= null,
+        this.age= '',
+        this.height= '',
+        this.weight= '',
+        this.temperature= '',
+        this.ventRate= '',
+        this.formula= '',
+        this.kcalFormula= '',
+        this.fluidsFormula= '',
+        this.proteinFormula= '',
+        this.bmiStatus= '',
+        this.minFluids= 0
     }
 
 }
