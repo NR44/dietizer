@@ -199,15 +199,15 @@ new Vue({
             switch (true) {
                 case this.age > 75:
                 fluids = 25 * aw;
-                this.fluidsFormula = "Age > 75 --> 25 * Adjusted Weight"
+                this.fluidsFormula = "Age > 75 yrs: 25 mL/kg * Adjusted Weight"
                 break;
                 case this.age >= 56 && this.age <= 75:
                 fluids = 30 * aw;
-                this.fluidsFormula = "Age 56-74 --> 30 Adjusted Weight"
+                this.fluidsFormula = "Age 56-74 yrs: 30 mL/kg Adjusted Weight"
                 break;
                 case this.age >= 18 && this.age <= 55:
                 fluids = 35 * aw;
-                this.fluidsFormula = "Age 18-55 --> 35 * Adjusted Weight"
+                this.fluidsFormula = "Age 18-55 yrs: 35 mL/kg * Adjusted Weight"
                 break;
                 default:
                 fluids;
