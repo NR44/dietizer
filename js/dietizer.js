@@ -136,7 +136,7 @@ new Vue({
             if (this.canDoModPennState) {
                 const v = parseFloat(this.ventRate, 10);
                 const t = parseFloat(this.temperature, 10);
-                return Math.ceil(this.miffinSJ * .71 + v + t * 85 - 3085);
+                return Math.ceil(this.miffinSJ * .71 + v * 64 + t * 85 - 3085);
             } else return "can't do it!"
         },
         iertonJones92: function () {
